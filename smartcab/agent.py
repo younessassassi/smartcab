@@ -20,6 +20,7 @@ class LearningAgent(Agent):
         self.alpha = alpha       # Learning factor
 
         # Set any additional class parameters as needed
+        self.t = 0
 
     def reset(self, destination=None, testing=False):
         """ The reset function is called at the beginning of each trial.
@@ -34,7 +35,6 @@ class LearningAgent(Agent):
             self.alpha = 0.0
         else:
             self.epsilon = self.epsilon - 0.0015
-
         return None
 
     def build_state(self):
@@ -98,6 +98,22 @@ class LearningAgent(Agent):
 
         ###########
         # When not learning, choose a random action
+
+        # # When learning, choose a random action with 'epsilon' probability
+        # # Otherwise, choose an action with the highest Q-value for the current state
+
+        # if not self.learning or self.epsilon >= random.random():
+        #     action = random.choice(self.valid_actions)
+        # else:
+        #     possible_actions = []
+        #     max_q_value = self.get_maxQ(state)
+        #     for act in self.Q[state]:
+        #         if max_q_value == self.Q[state][act]:
+        #             possible_actions.append(act)
+        #     action = random.choice(possible_actions)
+
+
+
         action = random.choice(self.valid_actions)
     
         if self.learning:
@@ -169,7 +185,7 @@ def run():
     #    * epsilon - continuous value for the exploration factor, default is 1
     #    * alpha   - continuous value for the learning rate, default is 0.5
     
-    agent = env.create_agent(LearningAgent, learning=True, epsilon=1, alpha=0.6)
+    agent = env.create_agent(LearningAgent, learning=True, epsilon=1, alpha=0.5)
     
     ##############
     # Follow the driving agent
@@ -191,7 +207,7 @@ def run():
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(n_test=40)
+    sim.run(n_test=40, tolerance=0.01)
 
 
 if __name__ == '__main__':
